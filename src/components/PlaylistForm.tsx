@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface PlaylistVideo {
   title: string;
@@ -20,22 +20,27 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
-  const [playlists, setPlaylists] = useState<Playlist[]>(() => 
-    JSON.parse(localStorage.getItem('playlists') || '[]')
-  );
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+
+  useEffect(() => {
+    const savedPlaylists = JSON.parse(
+      localStorage.getItem("playlists") || "[]"
+    );
+    setPlaylists(savedPlaylists);
+  }, []);
 
   const handleCreatePlaylist = () => {
     if (!playlistName.trim()) return;
-    
+
     const newPlaylist: Playlist = {
       name: playlistName,
-      videos: []
+      videos: [],
     };
-    
+
     const updatedPlaylists = [...playlists, newPlaylist];
-    localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
-    setPlaylistName('');
+    setPlaylistName("");
     onPlaylistUpdate();
   };
 
@@ -46,22 +51,22 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
       if (playlist.name === selectedPlaylist) {
         return {
           ...playlist,
-          videos: [...playlist.videos, { title: videoTitle, url: videoUrl }]
+          videos: [...playlist.videos, { title: videoTitle, url: videoUrl }],
         };
       }
       return playlist;
     });
-    
-    localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+
+    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
-    setVideoTitle('');
-    setVideoUrl('');
+    setVideoTitle("");
+    setVideoUrl("");
     onPlaylistUpdate();
   };
 
   const handleDeletePlaylist = (playlistName: string) => {
-    const updatedPlaylists = playlists.filter(p => p.name !== playlistName);
-    localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+    const updatedPlaylists = playlists.filter((p) => p.name !== playlistName);
+    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
     setSelectedPlaylist(null);
     onPlaylistUpdate();
@@ -96,8 +101,8 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
                   onClick={() => setSelectedPlaylist(playlist.name)}
                   className={`px-4 py-2 rounded ${
                     selectedPlaylist === playlist.name
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200"
                   }`}
                 >
                   {playlist.name}

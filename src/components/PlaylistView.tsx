@@ -20,8 +20,8 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [currentVideo, setCurrentVideo] = useState<PlaylistVideo | null>(null);
   const [editingVideo, setEditingVideo] = useState<PlaylistVideo | null>(null);
-  const [editTitle, setEditTitle] = useState('');
-  const [editUrl, setEditUrl] = useState('');
+  const [editTitle, setEditTitle] = useState("");
+  const [editUrl, setEditUrl] = useState("");
 
   useEffect(() => {
     const savedPlaylists = JSON.parse(
@@ -31,17 +31,17 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
   }, [updateTrigger]);
 
   const handleDeleteVideo = (playlistName: string, videoTitle: string) => {
-    const updatedPlaylists = playlists.map(playlist => {
+    const updatedPlaylists = playlists.map((playlist) => {
       if (playlist.name === playlistName) {
         return {
           ...playlist,
-          videos: playlist.videos.filter(video => video.title !== videoTitle)
+          videos: playlist.videos.filter((video) => video.title !== videoTitle),
         };
       }
       return playlist;
     });
-    
-    localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+
+    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
     if (currentVideo?.title === videoTitle) {
       setCurrentVideo(null);
@@ -57,21 +57,21 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
   const handleSaveEdit = (playlistName: string) => {
     if (!editingVideo || !editTitle.trim() || !editUrl.trim()) return;
 
-    const updatedPlaylists = playlists.map(playlist => {
+    const updatedPlaylists = playlists.map((playlist) => {
       if (playlist.name === playlistName) {
         return {
           ...playlist,
-          videos: playlist.videos.map(video => 
-            video.title === editingVideo.title 
+          videos: playlist.videos.map((video) =>
+            video.title === editingVideo.title
               ? { title: editTitle, url: editUrl }
               : video
-          )
+          ),
         };
       }
       return playlist;
     });
 
-    localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
+    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
     setPlaylists(updatedPlaylists);
     setEditingVideo(null);
     if (currentVideo?.title === editingVideo.title) {
@@ -136,7 +136,9 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDeleteVideo(playlist.name, video.title)}
+                          onClick={() =>
+                            handleDeleteVideo(playlist.name, video.title)
+                          }
                           className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
                         >
                           Delete
