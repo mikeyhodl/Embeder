@@ -80,8 +80,8 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 w-full">
-      <div className="md:w-1/3 space-y-4">
+    <div className="flex flex-col md:flex-row gap-4 w-full">
+      <div className="w-full sm:w-full md:w-1/3 lg:w-1/3 xl:w-1/3 2xl:w-1/3 space-y-4">
         {playlists.map((playlist) => (
           <div key={playlist.name} className="border rounded p-4">
             <h3 className="font-bold mb-2">{playlist.name}</h3>
@@ -152,14 +152,15 @@ export default function PlaylistView({ updateTrigger }: PlaylistViewProps) {
           </div>
         ))}
       </div>
-      <div className="md:w-2/3">
+      <div className="md:w-2/3 2xl:w-2/3 xl:w-2/3 lg:w-2/3">
         {currentVideo ? (
           <div className="space-y-4">
             <div className="bg-gray-100 p-4 rounded">
               <h2 className="text-xl font-bold mb-2">Now Playing:</h2>
               <p>{currentVideo.title}</p>
             </div>
-            <div className="w-full min-h-[400px]">
+            <div className="w-full flex items-center justify-center bg-gray-100 rounded p-8">
+              {/* player */}
               <Player title={currentVideo.title} src={currentVideo.url} />
             </div>
           </div>

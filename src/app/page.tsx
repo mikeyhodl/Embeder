@@ -1,13 +1,13 @@
-'use client';
-import { useState } from 'react';
-import PlaylistForm from '@/components/PlaylistForm';
-import PlaylistView from '@/components/PlaylistView';
+"use client";
+import { useState } from "react";
+import PlaylistForm from "@/components/PlaylistForm";
+import PlaylistView from "@/components/PlaylistView";
 
 export default function Home() {
   const [updateTrigger, setUpdateTrigger] = useState(0);
 
   const handlePlaylistUpdate = () => {
-    setUpdateTrigger(prev => prev + 1);
+    setUpdateTrigger((prev) => prev + 1);
   };
 
   return (
