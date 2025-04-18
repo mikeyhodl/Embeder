@@ -19,7 +19,7 @@ export default function Player({ title, src }: PlayerProps) {
         title={title}
         src={[{ src, type: "video/mp4" }]}
         autoPlay
-        crossOrigin="anonymous"
+        // crossOrigin="MediaCrossOrigin"
         playsInline={true}
       >
         <MediaProvider />
