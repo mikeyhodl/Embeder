@@ -73,7 +73,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
   };
 
   return (
-    <div className="space-y-4 md:w-1/3 lg:w-1/3 xl:w-1/3 2xl:w-1/3">
+    <div className="space-y-4 w-full">
       <div className="space-y-4">
         <h2 className="text-xl font-bold">Create Playlist</h2>
         <input
@@ -92,7 +92,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
       </div>
 
       {playlists.length > 0 && (
-        <div className="md:w-1/3 lg:w-1/3 xl:w-1/3 2xl:w-1/3">
+        <div className="w-full">
           <h2 className="text-xl font-bold">Select Playlist to Add Videos</h2>
           <div className="space-y-2">
             {playlists.map((playlist) => (
@@ -120,7 +120,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
       )}
 
       {selectedPlaylist && (
-        <div className="w-full sm:w-full md:w-1/3 lg:w-1/3 xl:w-1/3 2xl:w-1/3 space-y-4">
+        <div className="w-full space-y-4">
           <h2 className="text-xl font-bold">Add Video to {selectedPlaylist}</h2>
           <input
             type="text"
