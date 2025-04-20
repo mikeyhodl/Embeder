@@ -151,7 +151,7 @@ export async function updateVideoInPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find((v) => v.title === oldTitle);
+    const video = playlist.videos.find((v: { title: string }) => v.title === oldTitle);
     if (!video) return false;
 
     await prisma.video.update({
