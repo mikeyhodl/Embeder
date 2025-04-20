@@ -23,7 +23,7 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
       },
     });
 
-    return playlists.map((playlist) => ({
+    return playlists.map((playlist: { name: string; videos: { title: string; url: string; }[] }) => ({
       name: playlist.name,
       videos: playlist.videos.map((video) => ({
         title: video.title,
