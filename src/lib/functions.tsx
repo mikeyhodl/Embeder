@@ -1,9 +1,6 @@
 "use server";
-import {
-  PrismaClient,
-  Playlist as PrismaPlaylist,
-  Video as PrismaVideo,
-} from "@prisma/client";
+
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -26,15 +23,13 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
       },
     });
 
-    return playlists.map(
-      (playlist: PrismaPlaylist & { videos: PrismaVideo[] }) => ({
-        name: playlist.name,
-        videos: playlist.videos.map((video: PrismaVideo) => ({
-          title: video.title,
-          url: video.url,
-        })),
-      })
-    );
+    return playlists.map((playlist) => ({
+      name: playlist.name,
+      videos: playlist.videos.map((video) => ({
+        title: video.title,
+        url: video.url,
+      })),
+    }));
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return [];
@@ -45,17 +40,13 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
 export async function createPlaylist(name: string): Promise<Playlist | null> {
   try {
     const playlist = await prisma.playlist.create({
-      data: {
-        name,
-      },
-      include: {
-        videos: true,
-      },
+      data: { name },
+      include: { videos: true },
     });
 
     return {
       name: playlist.name,
-      videos: playlist.videos.map((video: PrismaVideo) => ({
+      videos: playlist.videos.map((video) => ({
         title: video.title,
         url: video.url,
       })),
@@ -88,16 +79,14 @@ export async function addVideoToPlaylist(
 
     const updatedPlaylist = await prisma.playlist.findUnique({
       where: { name: playlistName },
-      include: {
-        videos: true,
-      },
+      include: { videos: true },
     });
 
     if (!updatedPlaylist) return null;
 
     return {
       name: updatedPlaylist.name,
-      videos: updatedPlaylist.videos.map((video: PrismaVideo) => ({
+      videos: updatedPlaylist.videos.map((video) => ({
         title: video.title,
         url: video.url,
       })),
@@ -134,9 +123,7 @@ export async function deleteVideoFromPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find(
-      (v: PrismaVideo) => v.title === videoTitle
-    );
+    const video = playlist.videos.find((v) => v.title === videoTitle);
     if (!video) return false;
 
     await prisma.video.delete({
@@ -164,9 +151,7 @@ export async function updateVideoInPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find(
-      (v: PrismaVideo) => v.title === oldTitle
-    );
+    const video = playlist.videos.find((v) => v.title === oldTitle);
     if (!video) return false;
 
     await prisma.video.update({
