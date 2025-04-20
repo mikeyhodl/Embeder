@@ -123,7 +123,7 @@ export async function deleteVideoFromPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find((v) => v.title === videoTitle);
+    const video = playlist.videos.find((v: { title: string }) => v.title === videoTitle);
     if (!video) return false;
 
     await prisma.video.delete({
