@@ -1,15 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
-
-interface PlaylistVideo {
-  title: string;
-  url: string;
-}
-
-interface Playlist {
-  name: string;
-  videos: PlaylistVideo[];
-}
+import toast from "react-hot-toast";
+import {
+  Playlist,
+  PlaylistVideo,
+  getAllPlaylists,
+  deleteVideoFromPlaylist,
+  updateVideoInPlaylist,
+} from "@/lib/functions";
 
 interface PlaylistViewProps {
   updateTrigger: number;
@@ -26,25 +25,34 @@ export default function PlaylistView({
   const [editUrl, setEditUrl] = useState("");
 
   useEffect(() => {
-    const savedPlaylists = JSON.parse(
-      localStorage.getItem("playlists") || "[]"
-    );
-    setPlaylists(savedPlaylists);
+    const fetchPlaylists = async () => {
+      try {
+        const fetchedPlaylists = await getAllPlaylists();
+        setPlaylists(fetchedPlaylists);
+      } catch (error) {
+        toast.error("Failed to fetch playlists");
+      }
+    };
+    fetchPlaylists();
   }, [updateTrigger]);
 
-  const handleDeleteVideo = (playlistName: string, videoTitle: string) => {
-    const updatedPlaylists = playlists.map((playlist) => {
-      if (playlist.name === playlistName) {
-        return {
-          ...playlist,
-          videos: playlist.videos.filter((video) => video.title !== videoTitle),
-        };
+  const handleDeleteVideo = async (
+    playlistName: string,
+    videoTitle: string
+  ) => {
+    const toastId = toast.loading("Deleting video...");
+    try {
+      const success = await deleteVideoFromPlaylist(playlistName, videoTitle);
+      if (success) {
+        const updatedPlaylists = await getAllPlaylists();
+        setPlaylists(updatedPlaylists);
+        toast.success("Video deleted successfully", { id: toastId });
+      } else {
+        toast.error("Failed to delete video", { id: toastId });
       }
-      return playlist;
-    });
-
-    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-    setPlaylists(updatedPlaylists);
+    } catch (error) {
+      toast.error("Failed to delete video", { id: toastId });
+    }
   };
 
   const handleEditVideo = (playlistName: string, video: PlaylistVideo) => {
@@ -53,26 +61,38 @@ export default function PlaylistView({
     setEditUrl(video.url);
   };
 
-  const handleSaveEdit = (playlistName: string) => {
-    if (!editingVideo || !editTitle.trim() || !editUrl.trim()) return;
+  const handleSaveEdit = async (playlistName: string) => {
+    if (!editingVideo) {
+      toast.error("No video selected for editing");
+      return;
+    }
+    if (!editTitle.trim() || !editUrl.trim()) {
+      toast.error("Title and URL cannot be empty");
+      return;
+    }
 
-    const updatedPlaylists = playlists.map((playlist) => {
-      if (playlist.name === playlistName) {
-        return {
-          ...playlist,
-          videos: playlist.videos.map((video) =>
-            video.title === editingVideo.title
-              ? { title: editTitle, url: editUrl }
-              : video
-          ),
-        };
+    const toastId = toast.loading("Updating video...");
+    try {
+      const success = await updateVideoInPlaylist(
+        playlistName,
+        editingVideo.title,
+        {
+          title: editTitle,
+          url: editUrl,
+        }
+      );
+
+      if (success) {
+        const updatedPlaylists = await getAllPlaylists();
+        setPlaylists(updatedPlaylists);
+        setEditingVideo(null);
+        toast.success("Video updated successfully", { id: toastId });
+      } else {
+        toast.error("Failed to update video", { id: toastId });
       }
-      return playlist;
-    });
-
-    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-    setPlaylists(updatedPlaylists);
-    setEditingVideo(null);
+    } catch (error) {
+      toast.error("Failed to update video", { id: toastId });
+    }
   };
 
   return (

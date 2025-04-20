@@ -9,19 +9,23 @@ export default function Header() {
           href="/"
           className="flex order-first lg:order-none lg:w-1/5 title-font font-medium items-center text-gray-900 lg:items-center lg:justify-center mb-4 md:mb-0"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            className="w-10 h-10 text-white p-2 bg-blue-500 rounded-full"
-            viewBox="0 0 24 24"
-          >
-            <path d="M5 3l14 9-14 9V3z" />
-          </svg>
-          <span className="ml-3 text-xl">Video Player</span>
+          <div className="flex items-center justify-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-10 h-10 text-white p-2 bg-blue-500 rounded-full hover:rotate-180 transition-transform duration-300"
+            >
+              <polygon points="6 3 20 12 6 21 6 3" />
+            </svg>
+          </div>
+          <span className="ml-3 text-xl italic">IPTV PLAYER</span>
         </Link>
         <div className="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0"></div>
       </div>

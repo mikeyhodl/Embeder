@@ -6,13 +6,19 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "import-data": "ts-node --project scripts/tsconfig.json scripts/import-data.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "@vidstack/react": "^1.12.12",
     "next": "15.0.3",
+    "pg": "^8.14.1",
+    "prisma": "^6.6.0",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-hot-toast": "^2.5.2"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -22,6 +28,7 @@
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

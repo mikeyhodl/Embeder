@@ -1,0 +1,92 @@
+[
+    {
+        "name": "IPTV",
+        "videos": [
+            {
+                "title": "Televisa Telenovelas",
+                "url": "https://televisa-televisa-1-it.samsung.wurl.tv/playlist.m3u8"
+            },
+            {
+                "title": "CNN",
+                "url": "https://v8.thetvapp.to/hls/CNN/tracks-v1a1/mono.m3u8?token=5LGkTFWFR3Dy6BlkYiUfJQ&expires=1745156468&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "USA Network",
+                "url": "https://v14.thetvapp.to/hls/USANetworkEast/tracks-v1a1/mono.m3u8?token=Rz7Td8i8-BG_FifSJ9pFPw&expires=1745156582&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "Turner Classic Movies USA",
+                "url": "https://v18.thetvapp.to/hls/TCMEast/tracks-v1a1/mono.m3u8?token=de_osjbHyQ_zA2D7f_xBqg&expires=1745156703&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "AMC - Eastern Feed Movie",
+                "url": "https://v18.thetvapp.to/hls/AMCEast/tracks-v1a1/mono.m3u8?token=0vEHoUHObR8EocfxbJcdAA&expires=1745156862&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "Comedy Central (US) - Eastern Feed",
+                "url": "https://v4.thetvapp.to/hls/ComedyCentralEast/tracks-v1a1/mono.m3u8?token=zJirCgKhWoDWnTRpov-Z2Q&expires=1745157394&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": " BET Her",
+                "url": "https://v8.thetvapp.to/hls/BETHerEast/tracks-v1a1/mono.m3u8?token=X335gqPYSJkqwuSMLcGiPg&expires=1745157509&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": " BET - Eastern Feed",
+                "url": "https://v4.thetvapp.to/hls/BETEast/tracks-v1a1/mono.m3u8?token=DFsFRHdb561Stf8EZTIvxA&expires=1745157549&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "CBS Sports Network USA",
+                "url": "https://v17.thetvapp.to/hls/CBSSportsNetworkUSA/tracks-v1a1/mono.m3u8?token=isbxVdS0cmNB1gI-f4Q3rw&expires=1745157624&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "E! Entertainment USA - Eastern Feed",
+                "url": "https://v17.thetvapp.to/hls/EEast/tracks-v1a1/mono.m3u8?token=RW6Z7bv0YrK3k0EVMzgJvg&expires=1745157665&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "Food Network USA - Eastern Feed",
+                "url": "https://v14.thetvapp.to/hls/FoodNetworkEast/tracks-v1a1/mono.m3u8?token=27SbyUKn84jmlQo_vVPQOw&expires=1745157696&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO - Eastern Feed",
+                "url": "https://v15.thetvapp.to/hls/HBOEast/tracks-v1a1/mono.m3u8?token=5aIARcvy8mFEzYywR4avEg&expires=1745157748&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO 2 - Eastern Feed",
+                "url": "https://v8.thetvapp.to/hls/HBO2East/tracks-v1a1/mono.m3u8?token=cQ005nZXf4kA-qIG4OAHNQ&expires=1745157769&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO Comedy HD - East",
+                "url": "https://v12.thetvapp.to/hls/HBOComedyEast/tracks-v1a1/mono.m3u8?token=hHHlDo_hW3ByWiL1nWh7DA&expires=1745157798&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO Family - Eastern Feed",
+                "url": "https://v4.thetvapp.to/hls/HBOFamilyEast/tracks-v1a1/mono.m3u8?token=JBtsouS89B2nwG1fxrjTUg&expires=1745157818&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO Signature (HBO 3) - Eastern",
+                "url": "https://v12.thetvapp.to/hls/HBOSignatureEast/tracks-v1a1/mono.m3u8?token=JkTsImRjQJ_UrGVl3YYIVQ&expires=1745157845&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "HBO Zone HD - East",
+                "url": "https://v5.thetvapp.to/hls/HBOZoneEast/tracks-v1a1/mono.m3u8?token=pn4kISThqjMhg-1FlGBOxA&expires=1745157870&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "Lifetime Movies - East",
+                "url": "https://v17.thetvapp.to/hls/LifetimeMoviesEast/tracks-v1a1/mono.m3u8?token=UuvlkFOhfel1QirYKaxSLg&expires=1745157901&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            },
+            {
+                "title": "Lifetime Network US - Eastern Feed",
+                "url": "https://v8.thetvapp.to/hls/LifetimeEast/tracks-v1a1/mono.m3u8?token=X97YVl-BQbsuxT-hk6Mu-A&expires=1745157921&user_id=QTk2RkFWa1h2bEU3a2tPaXZIMTdocWowbE5lNTlSS1NMSXZudUhEdg=="
+            }
+        ]
+    },
+    {
+        "name": "X",
+        "videos": [
+            {
+                "title": "This guy literally breaks down MCP and how to use it in under 18 minutes.",
+                "url": "https://video.twimg.com/amplify_video/1898065833626161152/vid/avc1/1280x720/ImMC7OnSrtNfzEEO.mp4?tag=14"
+            }
+        ]
+    }
+]

@@ -1,15 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { useState, useEffect } from "react";
-
-interface PlaylistVideo {
-  title: string;
-  url: string;
-}
-
-interface Playlist {
-  name: string;
-  videos: PlaylistVideo[];
-}
+import toast from "react-hot-toast";
+import {
+  Playlist,
+  PlaylistVideo,
+  createPlaylist,
+  addVideoToPlaylist,
+  deletePlaylist,
+  getAllPlaylists,
+} from "@/lib/functions";
 
 interface PlaylistFormProps {
   onPlaylistUpdate: () => void;
@@ -23,53 +23,90 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
   useEffect(() => {
-    const savedPlaylists = JSON.parse(
-      localStorage.getItem("playlists") || "[]"
-    );
-    setPlaylists(savedPlaylists);
+    const fetchPlaylists = async () => {
+      try {
+        const fetchedPlaylists = await getAllPlaylists();
+        setPlaylists(fetchedPlaylists);
+      } catch (error) {
+        toast.error("Failed to fetch playlists");
+      }
+    };
+    fetchPlaylists();
   }, []);
 
-  const handleCreatePlaylist = () => {
-    if (!playlistName.trim()) return;
+  const handleCreatePlaylist = async () => {
+    if (!playlistName.trim()) {
+      toast.error("Playlist name cannot be empty");
+      return;
+    }
 
-    const newPlaylist: Playlist = {
-      name: playlistName,
-      videos: [],
-    };
-
-    const updatedPlaylists = [...playlists, newPlaylist];
-    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-    setPlaylists(updatedPlaylists);
-    setPlaylistName("");
-    onPlaylistUpdate();
-  };
-
-  const handleAddVideo = () => {
-    if (!selectedPlaylist || !videoTitle.trim() || !videoUrl.trim()) return;
-
-    const updatedPlaylists = playlists.map((playlist: Playlist) => {
-      if (playlist.name === selectedPlaylist) {
-        return {
-          ...playlist,
-          videos: [...playlist.videos, { title: videoTitle, url: videoUrl }],
-        };
+    const toastId = toast.loading("Creating playlist...");
+    try {
+      const newPlaylist = await createPlaylist(playlistName);
+      if (newPlaylist) {
+        setPlaylists([...playlists, newPlaylist]);
+        setPlaylistName("");
+        onPlaylistUpdate();
+        toast.success("Playlist created successfully", { id: toastId });
+      } else {
+        toast.error("Failed to create playlist", { id: toastId });
       }
-      return playlist;
-    });
-
-    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-    setPlaylists(updatedPlaylists);
-    setVideoTitle("");
-    setVideoUrl("");
-    onPlaylistUpdate();
+    } catch (error) {
+      toast.error("Failed to create playlist", { id: toastId });
+    }
   };
 
-  const handleDeletePlaylist = (playlistName: string) => {
-    const updatedPlaylists = playlists.filter((p) => p.name !== playlistName);
-    localStorage.setItem("playlists", JSON.stringify(updatedPlaylists));
-    setPlaylists(updatedPlaylists);
-    setSelectedPlaylist(null);
-    onPlaylistUpdate();
+  const handleAddVideo = async () => {
+    if (!selectedPlaylist) {
+      toast.error("Please select a playlist first");
+      return;
+    }
+    if (!videoTitle.trim() || !videoUrl.trim()) {
+      toast.error("Video title and URL cannot be empty");
+      return;
+    }
+
+    const toastId = toast.loading("Adding video...");
+    try {
+      const video: PlaylistVideo = {
+        title: videoTitle,
+        url: videoUrl,
+      };
+
+      const updatedPlaylist = await addVideoToPlaylist(selectedPlaylist, video);
+      if (updatedPlaylist) {
+        setPlaylists(
+          playlists.map((p) =>
+            p.name === selectedPlaylist ? updatedPlaylist : p
+          )
+        );
+        setVideoTitle("");
+        setVideoUrl("");
+        onPlaylistUpdate();
+        toast.success("Video added successfully", { id: toastId });
+      } else {
+        toast.error("Failed to add video", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Failed to add video", { id: toastId });
+    }
+  };
+
+  const handleDeletePlaylist = async (playlistName: string) => {
+    const toastId = toast.loading("Deleting playlist...");
+    try {
+      const success = await deletePlaylist(playlistName);
+      if (success) {
+        setPlaylists(playlists.filter((p) => p.name !== playlistName));
+        setSelectedPlaylist(null);
+        onPlaylistUpdate();
+        toast.success("Playlist deleted successfully", { id: toastId });
+      } else {
+        toast.error("Failed to delete playlist", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Failed to delete playlist", { id: toastId });
+    }
   };
 
   return (
