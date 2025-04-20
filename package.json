@@ -2,15 +2,15 @@
   "name": "embeder",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "postinstall": "prisma generate",
-    "dev": "next dev",
-    "build": "npx prisma generate --schema=./prisma/schema.prisma && next build",
-    "start": "next start",
-    "lint": "next lint",
-    "prisma:generate": "prisma generate",
-    "import-data": "ts-node --project scripts/tsconfig.json scripts/import-data.ts"
-  },
+"scripts": {
+  "postinstall": "prisma generate",
+  "dev": "next dev",
+  "build": "prisma generate && next build",
+  "start": "next start",
+  "lint": "next lint",
+  "prisma:generate": "prisma generate",
+  "import-data": "ts-node --project scripts/tsconfig.json scripts/import-data.ts"
+},
   "dependencies": {
     "@prisma/client": "^6.6.0",
     "@radix-ui/react-avatar": "^1.0.4",
