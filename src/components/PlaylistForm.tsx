@@ -74,7 +74,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
 
   return (
     <div className="space-y-4 w-full">
-      <div className="space-y-4">
+      <div className="space-y-4 sticky top-28 bg-white z-30 p-4 shadow-md rounded-lg">
         <h2 className="text-xl font-bold">Create Playlist</h2>
         <input
           type="text"
