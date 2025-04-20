@@ -78,9 +78,15 @@ export default function PlaylistView({
   return (
     <div className="w-full">
       {playlists.map((playlist) => (
-        <div key={playlist.name} className="border rounded p-4 mb-4">
-          <h3 className="font-bold mb-2">{playlist.name}</h3>
-          <ul className="space-y-2">
+        <details
+          key={playlist.name}
+          className="border rounded p-4 mb-4"
+          open={false}
+        >
+          <summary className="font-bold mb-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+            {playlist.name}
+          </summary>
+          <ul className="space-y-2 mt-4">
             {playlist.videos.map((video) => (
               <li key={video.title} className="space-y-2">
                 {editingVideo?.title === video.title ? (
@@ -144,7 +150,7 @@ export default function PlaylistView({
               </li>
             ))}
           </ul>
-        </div>
+        </details>
       ))}
     </div>
   );
