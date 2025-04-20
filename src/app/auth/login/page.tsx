@@ -102,7 +102,7 @@ export default function Login() {
       </div>
       <div className="hidden bg-muted lg:block">
         <Image
-          src="/img/debby-hudson-asviIGR3CPE-unsplash.jpg"
+          src="/img/pexels-john-tekeridis-21837-1072851.jpg"
           alt="Image"
           width="1920"
           height="1080"
