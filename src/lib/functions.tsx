@@ -23,13 +23,18 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
       },
     });
 
-    return playlists.map((playlist: { name: string; videos: { title: string; url: string; }[] }) => ({
-      name: playlist.name,
-      videos: playlist.videos.map((video) => ({
-        title: video.title,
-        url: video.url,
-      })),
-    }));
+    return playlists.map(
+      (playlist: {
+        name: string;
+        videos: { title: string; url: string }[];
+      }) => ({
+        name: playlist.name,
+        videos: playlist.videos.map((video) => ({
+          title: video.title,
+          url: video.url,
+        })),
+      })
+    );
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return [];
@@ -86,10 +91,12 @@ export async function addVideoToPlaylist(
 
     return {
       name: updatedPlaylist.name,
-      videos: updatedPlaylist.videos.map((video: { title: string; url: string }) => ({
-        title: video.title,
-        url: video.url,
-      })),
+      videos: updatedPlaylist.videos.map(
+        (video: { title: string; url: string }) => ({
+          title: video.title,
+          url: video.url,
+        })
+      ),
     };
   } catch (error) {
     console.error("Error adding video to playlist:", error);
@@ -123,7 +130,9 @@ export async function deleteVideoFromPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find((v: { title: string }) => v.title === videoTitle);
+    const video = playlist.videos.find(
+      (v: { title: string }) => v.title === videoTitle
+    );
     if (!video) return false;
 
     await prisma.video.delete({
@@ -151,7 +160,9 @@ export async function updateVideoInPlaylist(
 
     if (!playlist) return false;
 
-    const video = playlist.videos.find((v: { title: string }) => v.title === oldTitle);
+    const video = playlist.videos.find(
+      (v: { title: string }) => v.title === oldTitle
+    );
     if (!video) return false;
 
     await prisma.video.update({
