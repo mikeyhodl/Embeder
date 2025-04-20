@@ -46,7 +46,7 @@ export async function createPlaylist(name: string): Promise<Playlist | null> {
 
     return {
       name: playlist.name,
-      videos: playlist.videos.map((video) => ({
+      videos: playlist.videos.map((video: { title: string; url: string }) => ({
         title: video.title,
         url: video.url,
       })),
@@ -86,7 +86,7 @@ export async function addVideoToPlaylist(
 
     return {
       name: updatedPlaylist.name,
-      videos: updatedPlaylist.videos.map((video) => ({
+      videos: updatedPlaylist.videos.map((video: { title: string; url: string }) => ({
         title: video.title,
         url: video.url,
       })),
