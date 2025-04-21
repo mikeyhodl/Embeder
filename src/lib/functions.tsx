@@ -1,10 +1,8 @@
 "use server";
 
-import { PrismaClient } from "../../src/prisma/generated/client";
+import { query, ensureDatabaseInitialized } from "./db";
 import { cache } from "react";
 import { revalidatePath } from "next/cache";
-
-const prisma = new PrismaClient();
 
 export interface PlaylistVideo {
   title: string;
@@ -16,27 +14,51 @@ export interface Playlist {
   videos: PlaylistVideo[];
 }
 
+interface DatabaseRow {
+  name: string;
+  title: string | null;
+  url: string | null;
+}
+
 // Get all playlists with their videos
 export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
   try {
-    const playlists = await prisma.playlist.findMany({
-      include: {
-        videos: true,
-      },
+    await ensureDatabaseInitialized();
+    console.log("Fetching playlists..."); // Debug log
+
+    const result = await query(`
+      SELECT p.name, v.title, v.url
+      FROM "Playlist" p
+      LEFT JOIN "Video" v ON p.id = v."playlistId"
+      ORDER BY p.name, v.title
+    `);
+
+    console.log("Query result:", result.rows); // Debug log
+
+    // Group videos by playlist
+    const playlistsMap = new Map<string, PlaylistVideo[]>();
+    result.rows.forEach((row: DatabaseRow) => {
+      if (!row.title) {
+        // If no videos, add an empty playlist
+        if (!playlistsMap.has(row.name)) {
+          playlistsMap.set(row.name, []);
+        }
+        return;
+      }
+      const videos = playlistsMap.get(row.name) || [];
+      videos.push({ title: row.title, url: row.url! });
+      playlistsMap.set(row.name, videos);
     });
 
-    return playlists.map(
-      (playlist: {
-        name: string;
-        videos: { title: string; url: string }[];
-      }) => ({
-        name: playlist.name,
-        videos: playlist.videos.map((video) => ({
-          title: video.title,
-          url: video.url,
-        })),
+    const playlists = Array.from(playlistsMap.entries()).map(
+      ([name, videos]) => ({
+        name,
+        videos,
       })
     );
+
+    console.log("Processed playlists:", playlists); // Debug log
+    return playlists;
   } catch (error) {
     console.error("Error fetching playlists:", error);
     return [];
@@ -46,18 +68,16 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
 // Create a new playlist
 export async function createPlaylist(name: string): Promise<Playlist | null> {
   try {
-    const playlist = await prisma.playlist.create({
-      data: { name },
-      include: { videos: true },
-    });
+    await ensureDatabaseInitialized();
+    const result = await query(
+      'INSERT INTO "Playlist" (name) VALUES ($1) RETURNING id',
+      [name]
+    );
 
     revalidatePath("/");
     return {
-      name: playlist.name,
-      videos: playlist.videos.map((video: { title: string; url: string }) => ({
-        title: video.title,
-        url: video.url,
-      })),
+      name,
+      videos: [],
     };
   } catch (error) {
     console.error("Error creating playlist:", error);
@@ -71,36 +91,45 @@ export async function addVideoToPlaylist(
   video: PlaylistVideo
 ): Promise<Playlist | null> {
   try {
-    const playlist = await prisma.playlist.findUnique({
-      where: { name: playlistName },
-    });
+    await ensureDatabaseInitialized();
+    // First get the playlist ID
+    const playlistResult = await query(
+      'SELECT id FROM "Playlist" WHERE name = $1',
+      [playlistName]
+    );
 
-    if (!playlist) return null;
+    if (playlistResult.rows.length === 0) return null;
+    const playlistId = playlistResult.rows[0].id;
 
-    await prisma.video.create({
-      data: {
-        title: video.title,
-        url: video.url,
-        playlistId: playlist.id,
-      },
-    });
+    // Add the video
+    await query(
+      'INSERT INTO "Video" (title, url, "playlistId") VALUES ($1, $2, $3)',
+      [video.title, video.url, playlistId]
+    );
 
-    const updatedPlaylist = await prisma.playlist.findUnique({
-      where: { name: playlistName },
-      include: { videos: true },
-    });
+    // Get the updated playlist
+    const result = await query(
+      `
+      SELECT p.name, v.title, v.url
+      FROM \"Playlist\" p
+      LEFT JOIN \"Video\" v ON p.id = v.\"playlistId\"
+      WHERE p.name = $1
+      ORDER BY v.title
+    `,
+      [playlistName]
+    );
 
-    if (!updatedPlaylist) return null;
+    const videos = result.rows
+      .filter((row: DatabaseRow) => row.title) // Filter out null rows
+      .map((row: DatabaseRow) => ({
+        title: row.title!,
+        url: row.url!,
+      }));
 
     revalidatePath("/");
     return {
-      name: updatedPlaylist.name,
-      videos: updatedPlaylist.videos.map(
-        (video: { title: string; url: string }) => ({
-          title: video.title,
-          url: video.url,
-        })
-      ),
+      name: playlistName,
+      videos,
     };
   } catch (error) {
     console.error("Error adding video to playlist:", error);
@@ -111,9 +140,8 @@ export async function addVideoToPlaylist(
 // Delete a playlist
 export async function deletePlaylist(name: string): Promise<boolean> {
   try {
-    await prisma.playlist.delete({
-      where: { name },
-    });
+    await ensureDatabaseInitialized();
+    await query('DELETE FROM "Playlist" WHERE name = $1', [name]);
     revalidatePath("/");
     return true;
   } catch (error) {
@@ -128,24 +156,20 @@ export async function deleteVideoFromPlaylist(
   videoTitle: string
 ): Promise<boolean> {
   try {
-    const playlist = await prisma.playlist.findUnique({
-      where: { name: playlistName },
-      include: { videos: true },
-    });
-
-    if (!playlist) return false;
-
-    const video = playlist.videos.find(
-      (v: { title: string }) => v.title === videoTitle
+    await ensureDatabaseInitialized();
+    const result = await query(
+      `
+      DELETE FROM \"Video\" v
+      USING \"Playlist\" p
+      WHERE v.\"playlistId\" = p.id
+      AND p.name = $1
+      AND v.title = $2
+    `,
+      [playlistName, videoTitle]
     );
-    if (!video) return false;
-
-    await prisma.video.delete({
-      where: { id: video.id },
-    });
 
     revalidatePath("/");
-    return true;
+    return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error("Error deleting video from playlist:", error);
     return false;
@@ -159,28 +183,21 @@ export async function updateVideoInPlaylist(
   newVideo: PlaylistVideo
 ): Promise<boolean> {
   try {
-    const playlist = await prisma.playlist.findUnique({
-      where: { name: playlistName },
-      include: { videos: true },
-    });
-
-    if (!playlist) return false;
-
-    const video = playlist.videos.find(
-      (v: { title: string }) => v.title === oldTitle
+    await ensureDatabaseInitialized();
+    const result = await query(
+      `
+      UPDATE \"Video\" v
+      SET title = $1, url = $2
+      FROM \"Playlist\" p
+      WHERE v.\"playlistId\" = p.id
+      AND p.name = $3
+      AND v.title = $4
+    `,
+      [newVideo.title, newVideo.url, playlistName, oldTitle]
     );
-    if (!video) return false;
-
-    await prisma.video.update({
-      where: { id: video.id },
-      data: {
-        title: newVideo.title,
-        url: newVideo.url,
-      },
-    });
 
     revalidatePath("/");
-    return true;
+    return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     console.error("Error updating video in playlist:", error);
     return false;

@@ -4,8 +4,12 @@ import "./globals.css";
 import React from "react";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/app/Theme-provider";
+import { initializeDatabase } from "../lib/db";
 
 const inter = Inter({ subsets: ["latin"] });
+
+// Initialize database on server startup
+initializeDatabase().catch(console.error);
 
 export const metadata: Metadata = {
   title: "Skool CRM",
