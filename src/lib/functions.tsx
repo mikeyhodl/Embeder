@@ -1,6 +1,8 @@
 "use server";
 
 import { PrismaClient } from "../../prisma/generated/client";
+import { cache } from "react";
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +17,7 @@ export interface Playlist {
 }
 
 // Get all playlists with their videos
-export async function getAllPlaylists(): Promise<Playlist[]> {
+export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
   try {
     const playlists = await prisma.playlist.findMany({
       include: {
@@ -39,7 +41,7 @@ export async function getAllPlaylists(): Promise<Playlist[]> {
     console.error("Error fetching playlists:", error);
     return [];
   }
-}
+});
 
 // Create a new playlist
 export async function createPlaylist(name: string): Promise<Playlist | null> {
@@ -49,6 +51,7 @@ export async function createPlaylist(name: string): Promise<Playlist | null> {
       include: { videos: true },
     });
 
+    revalidatePath("/");
     return {
       name: playlist.name,
       videos: playlist.videos.map((video: { title: string; url: string }) => ({
@@ -89,6 +92,7 @@ export async function addVideoToPlaylist(
 
     if (!updatedPlaylist) return null;
 
+    revalidatePath("/");
     return {
       name: updatedPlaylist.name,
       videos: updatedPlaylist.videos.map(
@@ -110,6 +114,7 @@ export async function deletePlaylist(name: string): Promise<boolean> {
     await prisma.playlist.delete({
       where: { name },
     });
+    revalidatePath("/");
     return true;
   } catch (error) {
     console.error("Error deleting playlist:", error);
@@ -139,6 +144,7 @@ export async function deleteVideoFromPlaylist(
       where: { id: video.id },
     });
 
+    revalidatePath("/");
     return true;
   } catch (error) {
     console.error("Error deleting video from playlist:", error);
@@ -173,6 +179,7 @@ export async function updateVideoInPlaylist(
       },
     });
 
+    revalidatePath("/");
     return true;
   } catch (error) {
     console.error("Error updating video in playlist:", error);
