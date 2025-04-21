@@ -10,7 +10,7 @@ async function handleAuthResponse(response: Response) {
     cookies().set('Authtoken', JSON.stringify(data));
     await setUserDataCookie(data.token);
   } else {
-    console.error("Access token is missing or invalid.");
+    // console.error("Access token is missing or invalid.");
   }
   return data;
 }
@@ -31,7 +31,7 @@ async function setUserDataCookie(token: string) {
     const userData = await response.json();
     cookies().set('UserData', JSON.stringify(userData));
   } catch (error) {
-    console.error("Failed to fetch user data:", error);
+    // console.error("Failed to fetch user data:", error);
   }
 }
 
@@ -46,7 +46,7 @@ export async function AuthSignIn(username: string, password: string): Promise<vo
     const response = await fetch(`${process.env.API_URL}/auth/login`, requestOptions);
     return await handleAuthResponse(response);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return Promise.reject(error);
   }
 }
@@ -62,7 +62,7 @@ export async function AuthSignUp(username: string, password: string, email: stri
     const response = await fetch(`${process.env.API_URL}/auth/register`, requestOptions);
     return await handleAuthResponse(response);
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 }
 
@@ -81,7 +81,7 @@ export async function ResetPassword(email: string, newPassword: string): Promise
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return Promise.reject(error);
   }
 }
@@ -111,7 +111,7 @@ export async function UpdateUser(username: string, email: string, firstName: str
     await UpdateUserDataCookie(Bearertoken);
     return data;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return Promise.reject(error);
   }
 }
@@ -132,7 +132,7 @@ async function UpdateUserDataCookie(token: string): Promise<void> {
     const userData = await response.json();
     cookies().set('UserData', JSON.stringify(userData));
   } catch (error) {
-    console.error("Failed to update user data cookie:", error);
+    // console.error("Failed to update user data cookie:", error);
   }
 }
 
@@ -160,7 +160,7 @@ export async function ChangePassword(oldPassword: string, newPassword: string): 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return Promise.reject(error);
   }
 }

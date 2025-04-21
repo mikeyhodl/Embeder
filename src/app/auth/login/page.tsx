@@ -36,7 +36,7 @@ export default function Login() {
       router.push("/");
     } catch (error) {
       // Error posting blog
-      console.error("Error logging in:", error);
+      // console.error("Error logging in:", error);
       toast.error("Error Logging in, Check Your Credentials");
     } finally {
       setIsLoading(false);

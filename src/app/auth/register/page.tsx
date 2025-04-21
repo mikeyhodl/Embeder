@@ -44,7 +44,7 @@ export default function LoginForm() {
       router.push("/auth/login");
     } catch (error: any) {
       // Error Registering
-      console.error("Error logging in:", error);
+      // console.error("Error logging in:", error);
       toast.error(error.message || "Error Registering, Please Try Again");
     } finally {
       setIsLoading(false);

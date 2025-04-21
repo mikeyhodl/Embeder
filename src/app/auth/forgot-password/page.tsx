@@ -31,7 +31,7 @@ export default function ForgotPassword() {
       toast.success("Password reset successfully");
       router.push("/auth/login");
     } catch (error) {
-      console.error("Error resetting password:", error);
+      // console.error("Error resetting password:", error);
       toast.error("Error resetting password, please try again");
     } finally {
       setIsLoading(false);

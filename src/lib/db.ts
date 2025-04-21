@@ -12,12 +12,12 @@ const pool = new Pool({
 export async function query(text: string, params?: any[]) {
     const client = await pool.connect();
     try {
-        console.log('Executing query:', text, params); // Debug log
+        // console.log('Executing query:', text, params); // Debug log
         const result = await client.query(text, params);
-        console.log('Query result:', result.rows); // Debug log
+        // console.log('Query result:', result.rows); // Debug log
         return result;
     } catch (error) {
-        console.error('Query error:', error);
+        // console.error('Query error:', error);
         throw error;
     } finally {
         client.release();
@@ -27,7 +27,7 @@ export async function query(text: string, params?: any[]) {
 // Initialize the database tables if they don't exist
 export async function initializeDatabase() {
     try {
-        console.log('Initializing database...'); // Debug log
+        // console.log('Initializing database...'); // Debug log
         // Create Playlist table
         await query(`
             CREATE TABLE IF NOT EXISTS "Playlist" (
@@ -45,9 +45,9 @@ export async function initializeDatabase() {
                 "playlistId" INTEGER REFERENCES "Playlist"(id) ON DELETE CASCADE
             );
         `);
-        console.log('Database initialized successfully'); // Debug log
+        // console.log('Database initialized successfully'); // Debug log
     } catch (error) {
-        console.error('Error initializing database:', error);
+        // console.error('Error initializing database:', error);
         throw error;
     }
 }
@@ -55,7 +55,7 @@ export async function initializeDatabase() {
 // Server action to ensure database is initialized
 export async function ensureDatabaseInitialized() {
     try {
-        console.log('Checking database initialization...'); // Debug log
+        // console.log('Checking database initialization...'); // Debug log
         // Check if tables exist
         const result = await query(`
             SELECT EXISTS (
@@ -65,13 +65,13 @@ export async function ensureDatabaseInitialized() {
         `);
 
         if (!result.rows[0].exists) {
-            console.log('Tables do not exist, initializing...'); // Debug log
+            // console.log('Tables do not exist, initializing...'); // Debug log
             await initializeDatabase();
         } else {
-            console.log('Tables already exist'); // Debug log
+            // console.log('Tables already exist'); // Debug log
         }
     } catch (error) {
-        console.error('Error checking database initialization:', error);
+        // console.error('Error checking database initialization:', error);
         throw error;
     }
 }

@@ -24,7 +24,7 @@ interface DatabaseRow {
 export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
   try {
     await ensureDatabaseInitialized();
-    console.log("Fetching playlists..."); // Debug log
+    // console.log("Fetching playlists..."); // Debug log
 
     const result = await query(`
       SELECT p.name, v.title, v.url
@@ -33,7 +33,7 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
       ORDER BY p.name, v.title
     `);
 
-    console.log("Query result:", result.rows); // Debug log
+    // console.log("Query result:", result.rows); // Debug log
 
     // Group videos by playlist
     const playlistsMap = new Map<string, PlaylistVideo[]>();
@@ -57,10 +57,10 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
       })
     );
 
-    console.log("Processed playlists:", playlists); // Debug log
+    // console.log("Processed playlists:", playlists); // Debug log
     return playlists;
   } catch (error) {
-    console.error("Error fetching playlists:", error);
+    // console.error("Error fetching playlists:", error);
     return [];
   }
 });
@@ -80,7 +80,7 @@ export async function createPlaylist(name: string): Promise<Playlist | null> {
       videos: [],
     };
   } catch (error) {
-    console.error("Error creating playlist:", error);
+    // console.error("Error creating playlist:", error);
     return null;
   }
 }
@@ -132,7 +132,7 @@ export async function addVideoToPlaylist(
       videos,
     };
   } catch (error) {
-    console.error("Error adding video to playlist:", error);
+    // console.error("Error adding video to playlist:", error);
     return null;
   }
 }
@@ -145,7 +145,7 @@ export async function deletePlaylist(name: string): Promise<boolean> {
     revalidatePath("/");
     return true;
   } catch (error) {
-    console.error("Error deleting playlist:", error);
+    // console.error("Error deleting playlist:", error);
     return false;
   }
 }
@@ -171,7 +171,7 @@ export async function deleteVideoFromPlaylist(
     revalidatePath("/");
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
-    console.error("Error deleting video from playlist:", error);
+    // console.error("Error deleting video from playlist:", error);
     return false;
   }
 }
@@ -199,7 +199,7 @@ export async function updateVideoInPlaylist(
     revalidatePath("/");
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
-    console.error("Error updating video in playlist:", error);
+    // console.error("Error updating video in playlist:", error);
     return false;
   }
 }
