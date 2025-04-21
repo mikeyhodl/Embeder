@@ -1,6 +1,6 @@
 "use server";
 
-import { PrismaClient } from "../../prisma/generated/client";
+import { PrismaClient } from "../../src/prisma/generated/client";
 import { cache } from "react";
 import { revalidatePath } from "next/cache";
 
