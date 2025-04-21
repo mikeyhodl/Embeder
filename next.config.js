@@ -12,12 +12,13 @@ const nextConfig = {
   },
   experimental: {
     // Prevent Prisma from being tree-shaken in server components
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma', '/prisma/generated/client'],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
       // Ensure Prisma engine files are copied
       config.resolve.alias['@prisma/client'] = require.resolve('@prisma/client');
+      config.resolve.alias['./prisma/generated/client'] = require.resolve('./prisma/generated/client');
       config.module.rules.push({
         test: /\.node$/,
         use: [
