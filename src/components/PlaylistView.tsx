@@ -23,6 +23,10 @@ export default function PlaylistView({
   const [editingVideo, setEditingVideo] = useState<PlaylistVideo | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editUrl, setEditUrl] = useState("");
+  const [videoToDelete, setVideoToDelete] = useState<{
+    playlistName: string;
+    videoTitle: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -46,6 +50,7 @@ export default function PlaylistView({
       if (success) {
         const updatedPlaylists = await getAllPlaylists();
         setPlaylists(updatedPlaylists);
+        setVideoToDelete(null);
         toast.success("Video deleted successfully", { id: toastId });
       } else {
         toast.error("Failed to delete video", { id: toastId });
@@ -140,6 +145,29 @@ export default function PlaylistView({
                       </button>
                     </div>
                   </div>
+                ) : videoToDelete?.playlistName === playlist.name &&
+                  videoToDelete?.videoTitle === video.title ? (
+                  <div className="space-y-2 p-2 bg-red-50 rounded">
+                    <p className="text-red-600 font-medium">
+                      Are you sure you want to delete this video?
+                    </p>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() =>
+                          handleDeleteVideo(playlist.name, video.title)
+                        }
+                        className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                      >
+                        Confirm Delete
+                      </button>
+                      <button
+                        onClick={() => setVideoToDelete(null)}
+                        className="px-2 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 text-sm"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <div className="flex items-center justify-between bg-white p-2 rounded border">
                     <span className="flex-grow truncate">{video.title}</span>
@@ -158,7 +186,10 @@ export default function PlaylistView({
                       </button>
                       <button
                         onClick={() =>
-                          handleDeleteVideo(playlist.name, video.title)
+                          setVideoToDelete({
+                            playlistName: playlist.name,
+                            videoTitle: video.title,
+                          })
                         }
                         className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
                       >

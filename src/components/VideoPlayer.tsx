@@ -25,10 +25,12 @@ export default function VideoPlayer({ currentVideo }: VideoPlayerProps) {
   return (
     <div className="space-y-4">
       <div className="bg-gray-100 p-4 rounded">
-        <h2 className="text-xl font-bold mb-2">Now Playing:</h2>
-        <p className="text-xl font-bold mb-2 text-blue-600">
-          {currentVideo.title}
-        </p>
+        <h2 className="text-xl font-bold mb-2">
+          Now Playing:
+          <span className="text-xl pl-2 font-bold mb-2 text-blue-600">
+            {currentVideo.title}
+          </span>
+        </h2>
       </div>
       <div className="w-full flex items-center justify-center bg-gray-100 rounded p-8">
         <MediaPlayer

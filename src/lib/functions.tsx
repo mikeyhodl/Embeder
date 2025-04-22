@@ -203,3 +203,23 @@ export async function updateVideoInPlaylist(
     return false;
   }
 }
+
+// Update a playlist name
+export async function updatePlaylist(
+  oldName: string,
+  newName: string
+): Promise<boolean> {
+  try {
+    await ensureDatabaseInitialized();
+    const result = await query(
+      'UPDATE "Playlist" SET name = $1 WHERE name = $2',
+      [newName, oldName]
+    );
+
+    revalidatePath("/");
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    // console.error("Error updating playlist:", error);
+    return false;
+  }
+}
