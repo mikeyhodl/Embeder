@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 export interface PlaylistVideo {
   title: string;
   url: string;
+  logo?: string;
 }
 
 export interface Playlist {
@@ -18,6 +19,7 @@ interface DatabaseRow {
   name: string;
   title: string | null;
   url: string | null;
+  logo?: string;
 }
 
 // Get all playlists with their videos
@@ -27,7 +29,7 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
     // console.log("Fetching playlists..."); // Debug log
 
     const result = await query(`
-      SELECT p.name, v.title, v.url
+      SELECT p.name, v.title, v.url, v.logo
       FROM "Playlist" p
       LEFT JOIN "Video" v ON p.id = v."playlistId"
       ORDER BY p.name, v.title
@@ -46,7 +48,11 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
         return;
       }
       const videos = playlistsMap.get(row.name) || [];
-      videos.push({ title: row.title, url: row.url! });
+      videos.push({
+        title: row.title,
+        url: row.url!,
+        logo: row.logo || undefined,
+      });
       playlistsMap.set(row.name, videos);
     });
 
@@ -187,13 +193,19 @@ export async function updateVideoInPlaylist(
     const result = await query(
       `
       UPDATE \"Video\" v
-      SET title = $1, url = $2
+      SET title = $1, url = $2, logo = $3
       FROM \"Playlist\" p
       WHERE v.\"playlistId\" = p.id
-      AND p.name = $3
-      AND v.title = $4
+      AND p.name = $4
+      AND v.title = $5
     `,
-      [newVideo.title, newVideo.url, playlistName, oldTitle]
+      [
+        newVideo.title,
+        newVideo.url,
+        newVideo.logo || null,
+        playlistName,
+        oldTitle,
+      ]
     );
 
     revalidatePath("/");

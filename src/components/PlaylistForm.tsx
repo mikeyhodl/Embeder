@@ -21,6 +21,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
   const [videoTitle, setVideoTitle] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [videoLogo, setVideoLogo] = useState("");
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [editingPlaylist, setEditingPlaylist] = useState<string | null>(null);
   const [editPlaylistName, setEditPlaylistName] = useState("");
@@ -75,6 +76,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
       const video: PlaylistVideo = {
         title: videoTitle,
         url: videoUrl,
+        logo: videoLogo.trim() || undefined,
       };
 
       const updatedPlaylist = await addVideoToPlaylist(selectedPlaylist, video);
@@ -86,6 +88,7 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
         );
         setVideoTitle("");
         setVideoUrl("");
+        setVideoLogo("");
         onPlaylistUpdate();
         toast.success("Video added successfully", { id: toastId });
       } else {
@@ -261,6 +264,13 @@ export default function PlaylistForm({ onPlaylistUpdate }: PlaylistFormProps) {
             value={videoUrl}
             onChange={(e) => setVideoUrl(e.target.value)}
             placeholder="Video URL"
+            className="w-full p-2 border rounded"
+          />
+          <input
+            type="text"
+            value={videoLogo}
+            onChange={(e) => setVideoLogo(e.target.value)}
+            placeholder="Video Logo URL (optional)"
             className="w-full p-2 border rounded"
           />
           <button

@@ -23,6 +23,7 @@ export default function PlaylistView({
   const [editingVideo, setEditingVideo] = useState<PlaylistVideo | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editUrl, setEditUrl] = useState("");
+  const [editLogo, setEditLogo] = useState("");
   const [videoToDelete, setVideoToDelete] = useState<{
     playlistName: string;
     videoTitle: string;
@@ -64,6 +65,7 @@ export default function PlaylistView({
     setEditingVideo(video);
     setEditTitle(video.title);
     setEditUrl(video.url);
+    setEditLogo(video.logo || "");
   };
 
   const handleSaveEdit = async (playlistName: string) => {
@@ -84,6 +86,7 @@ export default function PlaylistView({
         {
           title: editTitle,
           url: editUrl,
+          logo: editLogo.trim() || undefined,
         }
       );
 
@@ -130,6 +133,13 @@ export default function PlaylistView({
                       className="w-full p-1 border rounded"
                       placeholder="Video URL"
                     />
+                    <input
+                      type="text"
+                      value={editLogo}
+                      onChange={(e) => setEditLogo(e.target.value)}
+                      className="w-full p-1 border rounded"
+                      placeholder="Video Logo URL (optional)"
+                    />
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleSaveEdit(playlist.name)}
@@ -170,7 +180,16 @@ export default function PlaylistView({
                   </div>
                 ) : (
                   <div className="flex items-center justify-between bg-white p-2 rounded border">
-                    <span className="flex-grow truncate">{video.title}</span>
+                    <div className="flex items-center space-x-2">
+                      {video.logo && (
+                        <img
+                          src={video.logo}
+                          alt={`${video.title} logo`}
+                          className="w-8 h-8 object-cover rounded"
+                        />
+                      )}
+                      <span className="flex-grow truncate">{video.title}</span>
+                    </div>
                     <div className="flex space-x-2">
                       <button
                         onClick={() => onVideoSelect(video)}
