@@ -42,6 +42,7 @@ export async function initializeDatabase() {
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
                 url VARCHAR(255) NOT NULL,
+                "updateUrl" VARCHAR(255),
                 "playlistId" INTEGER REFERENCES "Playlist"(id) ON DELETE CASCADE
             );
         `);

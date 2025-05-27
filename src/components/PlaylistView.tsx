@@ -8,6 +8,7 @@ import {
   getAllPlaylists,
   deleteVideoFromPlaylist,
   updateVideoInPlaylist,
+  updateVideoUrlFromUpdateUrl,
 } from "@/lib/functions";
 
 interface PlaylistViewProps {
@@ -24,6 +25,7 @@ export default function PlaylistView({
   const [editTitle, setEditTitle] = useState("");
   const [editUrl, setEditUrl] = useState("");
   const [editLogo, setEditLogo] = useState("");
+  const [editUpdateUrl, setEditUpdateUrl] = useState("");
   const [videoToDelete, setVideoToDelete] = useState<{
     playlistName: string;
     videoTitle: string;
@@ -66,6 +68,7 @@ export default function PlaylistView({
     setEditTitle(video.title);
     setEditUrl(video.url);
     setEditLogo(video.logo || "");
+    setEditUpdateUrl(video.updateUrl || "");
   };
 
   const handleSaveEdit = async (playlistName: string) => {
@@ -87,6 +90,7 @@ export default function PlaylistView({
           title: editTitle,
           url: editUrl,
           logo: editLogo.trim() || undefined,
+          updateUrl: editUpdateUrl.trim() || undefined,
         }
       );
 
@@ -100,6 +104,34 @@ export default function PlaylistView({
       }
     } catch (error) {
       toast.error("Failed to update video", { id: toastId });
+    }
+  };
+
+  const handleUpdateUrl = async (
+    playlistName: string,
+    video: PlaylistVideo
+  ) => {
+    if (!video.updateUrl) {
+      toast.error("No update URL configured for this video");
+      return;
+    }
+
+    const toastId = toast.loading("Updating video URL...");
+    try {
+      const success = await updateVideoUrlFromUpdateUrl(
+        playlistName,
+        video.title
+      );
+
+      if (success) {
+        const updatedPlaylists = await getAllPlaylists();
+        setPlaylists(updatedPlaylists);
+        toast.success("Video URL updated successfully", { id: toastId });
+      } else {
+        toast.error("Failed to update video URL", { id: toastId });
+      }
+    } catch (error) {
+      toast.error("Failed to update video URL", { id: toastId });
     }
   };
 
@@ -139,6 +171,13 @@ export default function PlaylistView({
                       onChange={(e) => setEditLogo(e.target.value)}
                       className="w-full p-1 border rounded"
                       placeholder="Video Logo URL (optional)"
+                    />
+                    <input
+                      type="text"
+                      value={editUpdateUrl}
+                      onChange={(e) => setEditUpdateUrl(e.target.value)}
+                      className="w-full p-1 border rounded"
+                      placeholder="Update URL (optional)"
                     />
                     <div className="flex space-x-2">
                       <button
@@ -203,6 +242,28 @@ export default function PlaylistView({
                       >
                         Edit
                       </button>
+                      {video.updateUrl && (
+                        <button
+                          onClick={() => handleUpdateUrl(playlist.name, video)}
+                          className="px-2 py-1 bg-purple-500 text-white rounded hover:bg-purple-600 text-sm"
+                          title="Update URL"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                          </svg>
+                        </button>
+                      )}
                       <button
                         onClick={() =>
                           setVideoToDelete({

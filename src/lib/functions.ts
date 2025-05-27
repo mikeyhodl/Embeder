@@ -8,6 +8,7 @@ export interface PlaylistVideo {
   title: string;
   url: string;
   logo?: string;
+  updateUrl?: string;
 }
 
 export interface Playlist {
@@ -20,6 +21,7 @@ interface DatabaseRow {
   title: string | null;
   url: string | null;
   logo?: string;
+  updateUrl?: string;
 }
 
 // Get all playlists with their videos
@@ -29,7 +31,7 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
     // console.log("Fetching playlists..."); // Debug log
 
     const result = await query(`
-      SELECT p.name, v.title, v.url, v.logo
+      SELECT p.name, v.title, v.url, v.logo, v."updateUrl"
       FROM "Playlist" p
       LEFT JOIN "Video" v ON p.id = v."playlistId"
       ORDER BY p.name, v.title
@@ -52,6 +54,7 @@ export const getAllPlaylists = cache(async (): Promise<Playlist[]> => {
         title: row.title,
         url: row.url!,
         logo: row.logo || undefined,
+        updateUrl: row.updateUrl || undefined,
       });
       playlistsMap.set(row.name, videos);
     });
@@ -193,16 +196,17 @@ export async function updateVideoInPlaylist(
     const result = await query(
       `
       UPDATE \"Video\" v
-      SET title = $1, url = $2, logo = $3
+      SET title = $1, url = $2, logo = $3, "updateUrl" = $4
       FROM \"Playlist\" p
       WHERE v.\"playlistId\" = p.id
-      AND p.name = $4
-      AND v.title = $5
+      AND p.name = $5
+      AND v.title = $6
     `,
       [
         newVideo.title,
         newVideo.url,
         newVideo.logo || null,
+        newVideo.updateUrl || null,
         playlistName,
         oldTitle,
       ]
@@ -232,6 +236,60 @@ export async function updatePlaylist(
     return result.rowCount !== null && result.rowCount > 0;
   } catch (error) {
     // console.error("Error updating playlist:", error);
+    return false;
+  }
+}
+
+// Update video URL from update URL
+export async function updateVideoUrlFromUpdateUrl(
+  playlistName: string,
+  videoTitle: string
+): Promise<boolean> {
+  try {
+    await ensureDatabaseInitialized();
+
+    // First get the video's update URL
+    const videoResult = await query(
+      `
+      SELECT v.url, v."updateUrl"
+      FROM "Video" v
+      JOIN "Playlist" p ON v."playlistId" = p.id
+      WHERE p.name = $1 AND v.title = $2
+      `,
+      [playlistName, videoTitle]
+    );
+
+    if (videoResult.rows.length === 0 || !videoResult.rows[0].updateUrl) {
+      return false;
+    }
+
+    const updateUrl = videoResult.rows[0].updateUrl;
+
+    // Fetch the updated URL
+    const response = await fetch(updateUrl);
+    const data = await response.json();
+
+    if (data.status !== "true" || !data.url) {
+      return false;
+    }
+
+    // Update the video URL
+    const result = await query(
+      `
+      UPDATE "Video" v
+      SET url = $1
+      FROM "Playlist" p
+      WHERE v."playlistId" = p.id
+      AND p.name = $2
+      AND v.title = $3
+      `,
+      [data.url, playlistName, videoTitle]
+    );
+
+    revalidatePath("/");
+    return result.rowCount !== null && result.rowCount > 0;
+  } catch (error) {
+    // console.error("Error updating video URL:", error);
     return false;
   }
 }
