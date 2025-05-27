@@ -3,20 +3,8 @@ import Link from "next/link";
 import { AuthSignOut } from "@/lib/logout";
 import { useState } from "react"; // Add this import
 
-import {
-  Bell,
-  CircleUser,
-  Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+import { CircleUser, Menu, Search } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,14 +24,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import MobileLinks from "@/components/ui/mobile-links";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export default function Header() {
-  const router = useRouter();
   const [isSidebarOpen, setSidebarOpen] = useState(false); // Add this state
 
-  const handleSignOut = (event: any) => {
+  const handleSignOut = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     AuthSignOut();
     toast.success("Logged Out successfully");

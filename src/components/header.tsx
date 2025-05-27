@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { AuthSignOut } from "@/lib/logout";
 
 export default function Header() {
-  const handleSignOut = (event: any) => {
+  const handleSignOut = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     AuthSignOut();
     toast.success("Logged Out successfully");

@@ -6,7 +6,7 @@ export function getFromCookie(item: CookieTypes) {
   const cookieArray = decodedCookie.split(";");
 
   for (let i = 0; i < cookieArray.length; i++) {
-    let cookie = cookieArray[i].trim();
+    const cookie = cookieArray[i].trim();
     if (cookie.indexOf(name) === 0) {
       return cookie.substring(name.length, cookie.length);
     }
@@ -16,7 +16,7 @@ export function getFromCookie(item: CookieTypes) {
 
 export function addToCookie(
   item: CookieTypes,
-  data: any,
+  data: string | number | boolean,
   expiryDays: number = 7
 ) {
   const expirationDate = new Date();

@@ -30,8 +30,8 @@ async function setUserDataCookie(token: string) {
 
     const userData = await response.json();
     cookies().set('UserData', JSON.stringify(userData));
-  } catch (error) {
-    // console.error("Failed to fetch user data:", error);
+  } catch {
+    // console.error("Failed to fetch user data");
   }
 }
 
@@ -61,8 +61,8 @@ export async function AuthSignUp(username: string, password: string, email: stri
   try {
     const response = await fetch(`${process.env.API_URL}/auth/register`, requestOptions);
     return await handleAuthResponse(response);
-  } catch (error) {
-    // console.error(error);
+  } catch {
+    // console.error("Registration failed");
   }
 }
 
@@ -131,8 +131,8 @@ async function UpdateUserDataCookie(token: string): Promise<void> {
 
     const userData = await response.json();
     cookies().set('UserData', JSON.stringify(userData));
-  } catch (error) {
-    // console.error("Failed to update user data cookie:", error);
+  } catch {
+    // console.error("Failed to update user data cookie");
   }
 }
 

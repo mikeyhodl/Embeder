@@ -30,7 +30,7 @@ export default function ForgotPassword() {
       await ResetPassword(email, newPassword);
       toast.success("Password reset successfully");
       router.push("/auth/login");
-    } catch (error) {
+    } catch {
       // console.error("Error resetting password:", error);
       toast.error("Error resetting password, please try again");
     } finally {

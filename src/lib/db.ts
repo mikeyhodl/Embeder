@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 // Helper function to execute queries
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: unknown[]) {
     const client = await pool.connect();
     try {
         // console.log('Executing query:', text, params); // Debug log

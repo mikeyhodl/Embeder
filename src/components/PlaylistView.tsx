@@ -2,6 +2,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import Image from "next/image";
 import {
   Playlist,
   PlaylistVideo,
@@ -221,10 +222,12 @@ export default function PlaylistView({
                   <div className="flex items-center justify-between bg-white p-2 rounded border">
                     <div className="flex items-center space-x-2">
                       {video.logo && (
-                        <img
+                        <Image
                           src={video.logo}
                           alt={`${video.title} logo`}
-                          className="w-8 h-8 object-cover rounded"
+                          width={32}
+                          height={32}
+                          className="object-cover rounded"
                         />
                       )}
                       <span className="flex-grow truncate">{video.title}</span>
