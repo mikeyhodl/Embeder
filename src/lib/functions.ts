@@ -240,7 +240,6 @@ export async function updatePlaylist(
   }
 }
 
-// Update video URL from update URL
 export async function updateVideoUrlFromUpdateUrl(
   playlistName: string,
   videoTitle: string
@@ -260,16 +259,44 @@ export async function updateVideoUrlFromUpdateUrl(
     );
 
     if (videoResult.rows.length === 0 || !videoResult.rows[0].updateUrl) {
+      console.error(
+        `No video found or no updateUrl for playlist: ${playlistName}, video: ${videoTitle}`
+      );
       return false;
     }
 
     const updateUrl = videoResult.rows[0].updateUrl;
 
-    // Fetch the updated URL
-    const response = await fetch(updateUrl);
+    // Fetch the updated URL with custom headers
+    const response = await fetch(updateUrl, {
+      method: 'GET',
+      headers: {
+        'Authority': 'tvpass.org',
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br, zstd',
+        'Accept-Language': 'en-GB,en;q=0.9,fr-FR;q=0.8,fr;q=0.7,en-US;q=0.6,ru;q=0.5,it;q=0.4',
+        'Cache-Control': 'no-cache',
+        'Cookie': 'XSRF-TOKEN=eyJpdiI6InkzR0xPK3o3bll2dGhYdjN3VDA5dlE9PSIsInZhbHVlIjoid2NKL1d1TWZQR2NHY01xWm9JWWpGYzNkL1RQQW0wazZRaU5saGt1LzN2VmU5Uno3bmlXY2ovN1Z1ODZSWUJWb1U5TGZ2OEd0Mzg0WE5VRFduK2t0Tks2SDNDVGRKbHFKM1JTMVg3dC9iaXZRczNVaEZiT2FKVFVkRC9zRVN6MTYiLCJtYWMiOiI4ZGZkYTZmZjliM2FiZmRkOGE4ODBmMGE5ODIxMDY2MGVjYWVjMjVjZWQyOGMyMTRkODgzODhlMjU4YzU3NjRlIiwidGFnIjoiIn0%3D; tvpass_session=eyJpdiI6Im9DVmJqMWpraW5TajJWZkMybzk0blE9PSIsInZhbHVlIjoiUmpWbUVXYWV1U28wVzFvTWFhUGhuKzhFOGF5T1ZkbDg2T3pzdnRyUTI3eEo0Z2pjWUpVb25zV3N5VlhjM0t2UXFEQjNMdG02TGZLMUl4Z3o0MEVuT09sSHI5Z01JSDlBSzlwYkRoeW1DOGlXY1hMTlFDWHp0ZU5rVThIVG1XQ1kiLCJtYWMiOiIzMGI3NTI5M2UzY2IyYTVlN2U2NmIyYzUzODg1YzdhYmZiNDVhY2VhNDE2MGM5NjJlZGJlMTJiYTkxNjEyY2Y5IiwidGFnIjoiIn0%3D',
+        'DNT': '1',
+        'Pragma': 'no-cache',
+        'Priority': 'u=1, i',
+        'Referer': 'https://tvpass.org/channel/ae-us-eastern-feed',
+        'Sec-Ch-Ua': '"Google Chrome";v="137", "Chromium";v="137", "Not/A)Brand";v="24"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36'
+      }
+    });
+
     const data = await response.json();
 
     if (data.status !== "true" || !data.url) {
+      console.error(
+        `Invalid response from updateUrl: ${updateUrl}, status: ${data.status}, url: ${data.url}`
+      );
       return false;
     }
 
@@ -288,8 +315,11 @@ export async function updateVideoUrlFromUpdateUrl(
 
     revalidatePath("/");
     return result.rowCount !== null && result.rowCount > 0;
-  } catch {
-    // console.error("Error updating video URL:", error);
+  } catch (error) {
+    console.error(
+      `Error updating video URL for playlist: ${playlistName}, video: ${videoTitle}`,
+      error
+    );
     return false;
   }
 }
